@@ -1,34 +1,47 @@
 """
-Save and load models, preprocessors
+Save and load models or preprocessors using pickle.
 """
 
-import pickle, os
+import os
+import pickle
 
 
-def save_model(model, modelName: str):
+def save_model(model: any, model_name: str):
     """
-    Save a model to the specified path.
-    
+    Save a model to a file inside MODELS_DIR or current directory.
+
     Args:
-        model: The model to save.
-        path (str): The file path where the model will be saved.
+        model: The model to save (any picklable object).
+        model_name (str): The filename to use (e.g., 'model.pkl').
     """
-    models_dir = models_dir or os.environ.get("MODELS_DIR")
-    if not models_dir:
-        raise ValueError("MODELS_DIR is not defined (environment variable or argument).")
-    
-    full_path = os.path.join(models_dir, modelName)
+    models_dir = os.environ.get("MODELS_DIR", ".")
+    os.makedirs(models_dir, exist_ok=True)
+
+    full_path = os.path.join(models_dir, model_name)
     with open(full_path, "wb") as f:
-        pickle.dump(model,f)
+        pickle.dump(model, f)
 
-def load_model(path: str):
+    print(f"Model saved to {full_path}")
+
+
+def load_model(model_name: str) -> any:
     """
-    Load a model from the specified path.
-    
+    Load a model from a file in MODELS_DIR or current directory.
+
     Args:
-        path (str): The file path from which the model will be loaded.
-        
+        model_name (str): The filename of the saved model.
+
     Returns:
-        The loaded model.
+        The loaded model (any Python object).
     """
-    pass
+    models_dir = os.environ.get("MODELS_DIR", ".")
+    full_path = os.path.join(models_dir, model_name)
+
+    if not os.path.isfile(full_path):
+        raise FileNotFoundError(f"Model file not found: {full_path}")
+
+    with open(full_path, "rb") as f:
+        model = pickle.load(f)
+
+    print(f"Model loaded from {full_path}")
+    return model
