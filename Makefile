@@ -45,10 +45,9 @@ run:
 clean:
 	find . -type f -name '*.pyc' -delete
 	find . -type d -name '__pycache__' -exec rm -r {} +
-	rm -rf .pytest_cache .mypy_cache .coverage coverage.xml htmlcov dist build *.egg-info
+	rm -rf .pytest_cache .mypy_cache .coverage* coverage.xml htmlcov dist build *.egg-info
 
 ## Génère un rapport de couverture
 test-cov:
 	pytest --cov=src/titanic --cov-report=term --cov-report=html tests/
 	@echo "🧪 Rapport HTML généré dans htmlcov/index.html"
-	@$(PYTHON) -c "import webbrowser, os; webbrowser.open('file://' + os.path.abspath('htmlcov/index.html'))"

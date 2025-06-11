@@ -1,20 +1,41 @@
 import pytest
-from titanic.data import load_data, clean_data, prepare_data
-from titanic.train import train_model, evaluate_model
+import pandas as pd
+import numpy as np
+from titanic.train import train_model, evaluate_model, optimize_model
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV
 
+@pytest.fixture
+def dummy_data():
+    X = pd.DataFrame({
+        'feature1': [0, 1, 1, 0, 1, 0, 1, 0, 1, 0],
+        'feature2': [1, 1, 0, 0, 1, 1, 0, 0, 1, 0]
+    })
+    y = pd.Series([0, 1, 1, 0, 1, 0, 1, 0, 1, 0]) 
+    return X, y
 
-def test_train_model():
-    df = clean_data(load_data())
-    X_train, X_test, y_train, y_test = prepare_data(df)
-    model, y_pred = train_model(X_train, y_train, X_test)
-    assert len(y_pred) == len(y_test)
-    assert hasattr(model, "predict")
+def test_train_model(dummy_data):
+    X, y = dummy_data
+    model, y_pred = train_model(X, y, X)
+    
+    assert isinstance(model, LogisticRegression)
+    assert len(y_pred) == len(X)
 
+def test_evaluate_model_output(capsys, dummy_data):
+    X, y = dummy_data
+    _, y_pred = train_model(X, y, X)
 
-def test_evaluate_model(capsys):
-    df = clean_data(load_data())
-    X_train, X_test, y_train, y_test = prepare_data(df)
-    model, y_pred = train_model(X_train, y_train, X_test)
-    evaluate_model(y_test, y_pred)
+    evaluate_model(y, y_pred)
+
     captured = capsys.readouterr()
-    assert "Accuracy" in captured.out
+    assert "Accuracy:" in captured.out
+    assert "Classification Report:" in captured.out
+    assert "Confusion Matrix:" in captured.out
+
+def test_optimize_model(dummy_data):
+    X, y = dummy_data
+    grid = optimize_model(X, y)
+
+    assert isinstance(grid, GridSearchCV)
+    assert hasattr(grid, "best_params_")
+    assert hasattr(grid, "best_score_")

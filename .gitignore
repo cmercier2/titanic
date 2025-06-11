@@ -17,4 +17,5 @@ notebooks/*.ipynb
 # MAC 
 .DS_Store
 
-.coverage
+.coverage*
+.vscode/
