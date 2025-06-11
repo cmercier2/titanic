@@ -5,7 +5,10 @@ from titanic.data import load_data, clean_data, prepare_data
 
 # --- Tests pour load_data ---
 
-def test_load_data_success(tmp_path):
+def test_load_data_success(monkeypatch, tmp_path):
+    
+    monkeypatch.setenv("DATA_DIR", str(tmp_path))
+    
     # Crée un fichier CSV temporaire
     df = pd.DataFrame({
         "PassengerId": [1, 2],
@@ -22,7 +25,7 @@ def test_load_data_success(tmp_path):
         "Embarked": ["S", "C"]
     })
     csv_path = tmp_path / "train.csv"
-    df.to_csv(csv_path, index=False)
+    df.to_csv(csv_path, index=True)
 
     # Utilise le chemin temporaire
     loaded_df = load_data(data_dir=str(tmp_path))
