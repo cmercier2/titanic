@@ -47,20 +47,17 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame: The preprocessed Titanic dataset.
     """
-    df = df.copy()  # évite de modifier la version d'origine en place
+    df = df.copy() 
 
-    # Ne pas supprimer PassengerId s'il est index
     for col in ['Name', 'Ticket', 'Cabin']:
         if col in df.columns:
             df.drop(columns=col, inplace=True)
 
-    # Corriger le chained assignment : PAS de inplace=True sur une colonne
     if 'Age' in df.columns:
         df['Age'] = df['Age'].fillna(df['Age'].median())
     if 'Embarked' in df.columns:
         df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
 
-    # Encodage label
     for col in ['Sex', 'Embarked']:
         if col in df.columns:
             le = LabelEncoder()
