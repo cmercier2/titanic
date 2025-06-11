@@ -3,6 +3,7 @@ Load, preprocess, prepare, and save the Titanic dataset.
 """
 
 import pandas as pd
+import os
 
 def load_data():
     """
@@ -11,7 +12,10 @@ def load_data():
     Returns:
         DataFrame: The loaded Titanic dataset.
     """
-    pass
+    DATA_DIR = os.environ.get("DATA_DIR")
+    train_df = pd.read_csv(os.path.join(DATA_DIR,"train.csv"),index_col=0)
+    return train_df
+
        
 def clean_data(df):
     """

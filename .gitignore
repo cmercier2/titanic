@@ -12,6 +12,7 @@ venv/
 # Data & models
 data/*.csv
 models/*.pkl
+notebooks/*.ipynb
 
 # MAC 
 .DS_Store
