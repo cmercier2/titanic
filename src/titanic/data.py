@@ -1,53 +1,74 @@
 """
-Load, preprocess, prepare, and save the Titanic dataset.
+Load, preprocess, prepare, and split the Titanic dataset.
 """
 
-import pandas as pd
 import os
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 
-from sklearn.calibration import LabelEncoder
 
-def load_data():
+def load_data(data_dir=None) -> pd.DataFrame:
     """
     Load the Titanic dataset from a CSV file.
-    
-    Returns:
-        DataFrame: The loaded Titanic dataset.
-    """
-    DATA_DIR = os.environ.get("DATA_DIR")
-    if DATA_DIR is None:
-        raise ValueError("DATA_DIR is not defined.")
-    
-    train_df = pd.read_csv(os.path.join(DATA_DIR,"train.csv"),index_col=0)
-    return train_df
 
-       
-def clean_data(df):
-    """
-    clean the Titanic dataset.
-    
     Args:
-        df (DataFrame): The Titanic dataset.
-        
+        data_dir (str, optional): Path to the data directory. 
+                                  If None, uses the DATA_DIR environment variable.
+
     Returns:
-        DataFrame: The preprocessed Titanic dataset.
+        pd.DataFrame: Loaded Titanic dataset.
+
+    Raises:
+        ValueError: If DATA_DIR is not defined.
+        FileNotFoundError: If train.csv is not found.
     """
-    df.drop(columns=['PassengerId', 'Name', 'Ticket', 'Cabin'], inplace=True)
+    data_dir = data_dir or os.environ.get("DATA_DIR")
+    if not data_dir:
+        raise ValueError("DATA_DIR is not defined (environment variable or argument).")
+    
+    csv_path = os.path.join(data_dir, "train.csv")
+    if not os.path.isfile(csv_path):
+        raise FileNotFoundError(f"No such file: {csv_path}")
+    
+    return pd.read_csv(csv_path, index_col=0)
+
+
+def clean_data(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Clean and encode the Titanic dataset.
+
+    Args:
+        df (pd.DataFrame): Raw Titanic dataset.
+
+    Returns:
+        pd.DataFrame: Cleaned and encoded Titanic dataset.
+    """
+    df = df.copy()
+    df.drop(columns=['PassengerId', 'Name', 'Ticket', 'Cabin'], inplace=True, errors='ignore')
+    
     df['Age'].fillna(df['Age'].median(), inplace=True)
     df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+
     for col in ['Sex', 'Embarked']:
-        le = LabelEncoder()
-        df[col] = le.fit_transform(df[col])
+        if col in df.columns:
+            le = LabelEncoder()
+            df[col] = le.fit_transform(df[col])
+
+    return df
 
 
-def prepare_data(df:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]: 
+def prepare_data(df: pd.DataFrame):
     """
-    Prepare the Titanic dataset for training.
-    
+    Split the Titanic dataset into training and test sets.
+
     Args:
-        df (DataFrame): The preprocessed Titanic dataset.
-        
+        df (pd.DataFrame): Cleaned dataset including the 'Survived' column.
+
     Returns:
-        tuple: A tuple containing [X,y] the features DataFrame and the target Series.
+        Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]: 
+            X_train, X_test, y_train, y_test
     """
-    pass
+    X = df.drop('Survived', axis=1)
+    y = df['Survived']
+    return train_test_split(X, y, test_size=0.2, random_state=42)
