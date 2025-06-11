@@ -5,6 +5,8 @@ Load, preprocess, prepare, and save the Titanic dataset.
 import pandas as pd
 import os
 
+from sklearn.calibration import LabelEncoder
+
 def load_data():
     """
     Load the Titanic dataset from a CSV file.
@@ -33,6 +35,9 @@ def clean_data(df):
     df.drop(columns=['PassengerId', 'Name', 'Ticket', 'Cabin'], inplace=True)
     df['Age'].fillna(df['Age'].median(), inplace=True)
     df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+    for col in ['Sex', 'Embarked']:
+        le = LabelEncoder()
+        df[col] = le.fit_transform(df[col])
 
 
 def prepare_data(df:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]: 
