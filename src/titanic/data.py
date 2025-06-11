@@ -13,6 +13,9 @@ def load_data():
         DataFrame: The loaded Titanic dataset.
     """
     DATA_DIR = os.environ.get("DATA_DIR")
+    if DATA_DIR is None:
+        raise ValueError("DATA_DIR is not defined.")
+    
     train_df = pd.read_csv(os.path.join(DATA_DIR,"train.csv"),index_col=0)
     return train_df
 
@@ -27,7 +30,10 @@ def clean_data(df):
     Returns:
         DataFrame: The preprocessed Titanic dataset.
     """
-    pass
+    df.drop(columns=['PassengerId', 'Name', 'Ticket', 'Cabin'], inplace=True)
+    df['Age'].fillna(df['Age'].median(), inplace=True)
+    df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+
 
 def prepare_data(df:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]: 
     """
