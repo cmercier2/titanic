@@ -1,8 +1,8 @@
 # src/main.py (ou src/titanic/main.py selon ton arborescence)
 
-from titanic.data import load_data, clean_data, prepare_data
-from titanic.registry import save_model
-from titanic.train import train_model, evaluate_model, optimize_model
+from titanic_Rxdsilver.data import load_data, clean_data, prepare_data
+from titanic_Rxdsilver.registry import save_model
+from titanic_Rxdsilver.train import train_model, evaluate_model, optimize_model
 
 from dotenv import load_dotenv
 import os

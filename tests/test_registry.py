@@ -1,9 +1,9 @@
 import os
 import tempfile
 import pandas as pd
-from titanic.data import load_data, clean_data, prepare_data
-from titanic.train import train_model
-from titanic.registry import save_model, load_model
+from titanic_Rxdsilver.data import load_data, clean_data, prepare_data
+from titanic_Rxdsilver.train import train_model
+from titanic_Rxdsilver.registry import save_model, load_model
 
 
 def test_save_and_load_model():

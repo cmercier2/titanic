@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 import numpy as np
-from titanic.train import train_model, evaluate_model, optimize_model
+from titanic_Rxdsilver.train import train_model, evaluate_model, optimize_model
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 

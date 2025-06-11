@@ -1,7 +1,7 @@
 import os
 import pytest
 import pandas as pd
-from titanic.data import load_data, clean_data, prepare_data
+from titanic_Rxdsilver.data import load_data, clean_data, prepare_data
 
 # --- Tests pour load_data ---
 
