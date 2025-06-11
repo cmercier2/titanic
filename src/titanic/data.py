@@ -4,6 +4,7 @@ Load, preprocess, prepare, and save the Titanic dataset.
 
 import pandas as pd
 from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
 import os
 
 def load_data(file_name: str):
@@ -32,8 +33,11 @@ def clean_data(df):
     """
     df.drop(columns=['Name', 'Ticket', 'Cabin'], inplace=True)
     imputer = SimpleImputer().set_output(transform="pandas")
-    imputer.fit(train_df[['Age']])
-    train_df[['Age']] = imputer.transform(train_df[['Age']])
+    df_copy = df.copy()
+    imputer.fit(df_copy[['Age']])
+    df[['Age']] = imputer.transform(df_copy[['Age']])
+    df["Embarked"].fillna("S", inplace=True)
+    return df
 
 
 def prepare_data(df:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]: 
@@ -46,4 +50,8 @@ def prepare_data(df:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
     Returns:
         tuple: A tuple containing [X,y] the features DataFrame and the target Series.
     """
-    pass
+    numeric_features = ['Age', 'Fare']
+
+    scaler = StandardScaler()
+    df_scaled = df.copy()
+    df_scaled[numeric_features] = scaler.fit_transform(df[numeric_features])
