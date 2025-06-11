@@ -2,8 +2,17 @@
 Save and load models, preprocessors
 """
 
+import pickle, os
+
 
 def save_model(model, path: str):
+    if not os.path.exists("models"):
+        os.makedirs("models")
+
+    with open("models/" + path, "wb") as f:
+        pickle.dump(model, f)
+
+
     """
     Save a model to the specified path.
     
@@ -23,4 +32,7 @@ def load_model(path: str):
     Returns:
         The loaded model.
     """
-    pass
+    if not os.path.exists(path):
+        return
+    with open("model/" + path, r) as f:
+        pickle.load(f)
