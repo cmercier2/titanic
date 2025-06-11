@@ -3,9 +3,10 @@ Load, preprocess, prepare, and save the Titanic dataset.
 """
 
 import pandas as pd
+from sklearn.impute import SimpleImputer
 import os
 
-def load_data():
+def load_data(file_name: str):
     """
     Load the Titanic dataset from a CSV file.
     
@@ -13,8 +14,10 @@ def load_data():
         DataFrame: The loaded Titanic dataset.
     """
     DATA_DIR = os.environ.get("DATA_DIR")
-    train_df = pd.read_csv(os.path.join(DATA_DIR,"train.csv"),index_col=0)
-    return train_df
+
+    df  = pd.read_csv(os.path.join(DATA_DIR, file_name + ".csv"),index_col=0)
+    return df
+    
 
        
 def clean_data(df):
@@ -27,7 +30,11 @@ def clean_data(df):
     Returns:
         DataFrame: The preprocessed Titanic dataset.
     """
-    pass
+    df.drop(columns=['Name', 'Ticket', 'Cabin'], inplace=True)
+    imputer = SimpleImputer().set_output(transform="pandas")
+    imputer.fit(train_df[['Age']])
+    train_df[['Age']] = imputer.transform(train_df[['Age']])
+
 
 def prepare_data(df:pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]: 
     """
