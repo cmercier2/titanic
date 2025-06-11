@@ -20,3 +20,4 @@ notebooks/*.ipynb
 .coverage*
 .vscode/
 dist/
+.pypirc
