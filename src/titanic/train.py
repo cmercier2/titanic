@@ -4,9 +4,8 @@ Train the Titanic model.
 
 
 
-from sklearn.base import accuracy_score
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from sklearn.model_selection import GridSearchCV
 
 

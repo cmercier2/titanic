@@ -34,22 +34,33 @@ def load_data(data_dir=None) -> pd.DataFrame:
     return pd.read_csv(csv_path, index_col=0)
 
 
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Clean and encode the Titanic dataset.
-
-    Args:
-        df (pd.DataFrame): Raw Titanic dataset.
-
-    Returns:
-        pd.DataFrame: Cleaned and encoded Titanic dataset.
-    """
-    df = df.copy()
-    df.drop(columns=['PassengerId', 'Name', 'Ticket', 'Cabin'], inplace=True, errors='ignore')
+    Clean the Titanic dataset.
     
-    df['Age'].fillna(df['Age'].median(), inplace=True)
-    df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+    Args:
+        df (DataFrame): The Titanic dataset.
+        
+    Returns:
+        DataFrame: The preprocessed Titanic dataset.
+    """
+    df = df.copy()  # évite de modifier la version d'origine en place
 
+    # Ne pas supprimer PassengerId s'il est index
+    for col in ['Name', 'Ticket', 'Cabin']:
+        if col in df.columns:
+            df.drop(columns=col, inplace=True)
+
+    # Corriger le chained assignment : PAS de inplace=True sur une colonne
+    if 'Age' in df.columns:
+        df['Age'] = df['Age'].fillna(df['Age'].median())
+    if 'Embarked' in df.columns:
+        df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
+
+    # Encodage label
     for col in ['Sex', 'Embarked']:
         if col in df.columns:
             le = LabelEncoder()
