@@ -1,6 +1,5 @@
 import os
 import tempfile
-import shutil
 from titanic.data import load_data, clean_data, prepare_data
 from titanic.train import train_model
 from titanic.registry import save_model, load_model

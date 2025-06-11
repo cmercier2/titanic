@@ -26,6 +26,6 @@ model, y_pred = train_model(X_train, y_train, X_test)
 
 evaluate_model(y_test, y_pred)
 
-# best_model = optimize_model(X_train, y_train)
+best_model = optimize_model(X_train, y_train)
 
 save_model(model, "logistic_model.pkl")
