@@ -4,6 +4,7 @@ from titanic.data import load_data, clean_data, prepare_data
 from titanic.train import train_model
 from titanic.registry import save_model, load_model
 
+
 def test_save_and_load_model():
     df = clean_data(load_data())
     X_train, X_test, y_train, y_test = prepare_data(df)
